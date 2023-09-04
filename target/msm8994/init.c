@@ -102,6 +102,12 @@ extern int platform_is_msm8994(void);
 
 void target_early_init(void)
 {
+	//Relocate UEFI FB to the one used in LA platforms
+	writel(0x03400000, 0xFD915014);
+	writel(0x03400000, 0xFD917014);
+	//Flush 
+	writel(0x220D828,0xFD902018);
+	writel(0x64090,0xFD902218);
 #if WITH_DEBUG_UART
 	uart_dm_init(2, 0, BLSP1_UART1_BASE);
 #endif
