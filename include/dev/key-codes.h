@@ -80,7 +80,7 @@
 #define KEY_HOME	0x122
 #define KEY_BACK	0x123
 #define KEY_MENU	0x124
-
+#define KEY_CAMERA	0x766
 #define MAX_KEYS	0x1ff
 
 #endif /* __DEV_KEY_CODES_H */

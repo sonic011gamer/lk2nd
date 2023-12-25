@@ -141,6 +141,34 @@ int target_volume_up(void)
 	return !status; /* active low */
 }
 
+/* Return 1 if camera pressed */
+int target_camera(void)
+{
+	static uint8_t first_time = 0;
+	uint8_t status = 0;
+	struct pm8x41_gpio gpio;
+
+	if (!first_time) {
+		/* Configure the GPIO */
+		gpio.direction = PM_GPIO_DIR_IN;
+		gpio.function  = 0;
+		gpio.pull      = PM_GPIO_PULL_UP_30;
+		gpio.vin_sel   = 2;
+
+		pm8x41_gpio_config(4, &gpio);
+
+		/* Wait for the pmic gpio config to take effect */
+		udelay(10000);
+
+		first_time = 1;
+	}
+
+	/* Get status of P_GPIO_5 */
+	pm8x41_gpio_get(4, &status);
+
+	return !status; /* active low */
+}
+
 /* Return 1 if vol_down pressed */
 uint32_t target_volume_down(void)
 {
@@ -160,6 +188,9 @@ static void target_keystatus(void)
 
 	if(target_volume_up())
 		keys_post_event(KEY_VOLUMEUP, 1);
+
+	if(target_camera())
+		keys_post_event(KEY_CAMERA, 1);
 }
 
 void target_uninit(void)
